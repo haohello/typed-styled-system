@@ -1,0 +1,36 @@
+{
+  "name": "core",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "haohello <trudgeli@gmail.com>",
+  "homepage": "https://github.com/haohello/typed-styled-system#readme",
+  "license": "MIT",
+  "main": "dist/core.js",
+  "directories": {
+    "lib": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haohello/typed-styled-system.git"
+  },
+  "scripts": {
+    "build": "yarn run clean && yarn run compile",
+    "clean": "rimraf ./dist && rimraf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "bugs": {
+    "url": "https://github.com/haohello/typed-styled-system/issues"
+  },
+  "dependencies": {
+    "csstype": "^2.6.7",
+    "object-assign": "^4.1.1",
+    "utility-types": "^3.8.0"
+  },
+  "devDependencies": {
+    
+  }
+}
