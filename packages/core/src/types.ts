@@ -1296,7 +1296,7 @@ export type ParserProps = {
 } & BorderProps 
     & BackgroundProps
     & ColorProps
-    & FlexProps
+    & FlexboxProps
     & GridProps
     & LayoutProps
     & PositionProps

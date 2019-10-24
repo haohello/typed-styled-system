@@ -1,0 +1,50 @@
+{
+  "name": "@typed-styled-system/layout",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "haohello <trudgeli@gmail.com>",
+  "homepage": "https://github.com/haohello/typed-styled-system#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haohello/typed-styled-system.git"
+  },
+  "scripts": {
+    "build": "yarn run clean && yarn run compile",
+    "clean": "rimraf ./dist && rimraf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json",
+    "test": "jest"
+  },
+  "bugs": {
+    "url": "https://github.com/haohello/typed-styled-system/issues"
+  },
+  "dependencies": {
+    "@typed-styled-system/core": "^0.0.0"
+  },
+  "devDependencies": {
+    
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/*.ts"
+    ],
+    "collectCoverageFrom": [
+      "**/src/*.ts"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "html"
+    ]
+  }
+}
