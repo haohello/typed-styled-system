@@ -1,5 +1,5 @@
 import { system } from '../src/core'
-import { styleFn } from '../src/types'
+import { StyleFn } from '../src/types'
 
 test('returns a style parser', () => {
   const parser = system({

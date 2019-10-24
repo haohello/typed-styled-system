@@ -5,10 +5,12 @@
       "rootDir": "./src"
     },
     "references": [
+      {
+        "path": "../core" 
+      }
     ],
     "exclude": [
       "node_modules",
-      "dist",
-      "test"
+      "dist"
     ]
   }

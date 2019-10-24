@@ -2,7 +2,7 @@ import * as CSS from 'csstype';
 // import assign from 'object-assign'
 import { 
     ObjectOf, 
-    styleFn, 
+    StyleFn, 
     ParserProps, 
     ParserConfig, 
     ResponsiveValue, 
@@ -11,7 +11,7 @@ import {
     ResponsiveObjectValue, 
     ConfigStyle, 
     Config, 
-    sxFn
+    SxFn
 } from './types'
 
 export const merge = (a, b) => {
@@ -74,9 +74,9 @@ export const get =
 
 
 
-export const createParser = (config: ParserConfig): styleFn => {
+export const createParser = (config: ParserConfig): StyleFn => {
     const cache: ObjectOf<any> = {}
-    const parse: styleFn = (props: ParserProps): CSS.Properties => {
+    const parse: StyleFn = (props: ParserProps): CSS.Properties => {
         let styles: CSS.Properties = {}
         let shouldSort = false
         const isCacheDisabled = props.theme && props.theme.disableStyledSystemCache
@@ -136,7 +136,7 @@ export const createParser = (config: ParserConfig): styleFn => {
     return parse
 }
 
-const parseResponsiveStyle = (mediaQueries: string[], sx: sxFn, scale: ResponsiveValue<TLengthStyledSystem>, raw: ResponsiveArrayValue<string | number>, _props: ParserProps): CSS.Properties => {
+const parseResponsiveStyle = (mediaQueries: string[], sx: SxFn, scale: ResponsiveValue<TLengthStyledSystem>, raw: ResponsiveArrayValue<string | number>, _props: ParserProps): CSS.Properties => {
     let styles: CSS.Properties = {}
     raw.slice(0, mediaQueries.length).forEach((value, i) => {
         const media = mediaQueries[i]
@@ -152,7 +152,7 @@ const parseResponsiveStyle = (mediaQueries: string[], sx: sxFn, scale: Responsiv
     return styles
 }
 
-const parseResponsiveObject = (breakpoints, sx: sxFn, scale: ResponsiveValue<TLengthStyledSystem>, raw: ResponsiveObjectValue<string | number>, _props: ParserProps): CSS.Properties => {
+const parseResponsiveObject = (breakpoints, sx: SxFn, scale: ResponsiveValue<TLengthStyledSystem>, raw: ResponsiveObjectValue<string | number>, _props: ParserProps): CSS.Properties => {
     let styles: CSS.Properties = {}
     for (let key in raw) {
         const breakpoint = breakpoints[key]
@@ -176,9 +176,9 @@ export const createStyleFunction = ({
     scale,
     transform = getValue,
     defaultScale,
-}: ConfigStyle): sxFn => {
+}: ConfigStyle): SxFn => {
     properties = properties || [property]
-    const sx: sxFn = (value: TLengthStyledSystem, scale: ResponsiveValue<TLengthStyledSystem>, _props: ParserProps): CSS.Properties => {
+    const sx: SxFn = (value: TLengthStyledSystem, scale: ResponsiveValue<TLengthStyledSystem>, _props: ParserProps): CSS.Properties => {
         const result: CSS.Properties = {}
         const n = transform(value, scale, _props)
         if (n === null) return null
@@ -193,7 +193,7 @@ export const createStyleFunction = ({
 }
 
 // new v5 API
-export const system = (args: Config = {}): styleFn => {
+export const system = (args: Config = {}): StyleFn => {
     const config: ParserConfig = {}
     Object.keys(args).forEach(key => {
         const conf = args[key]
@@ -216,7 +216,7 @@ export const system = (args: Config = {}): styleFn => {
     return parser
 }
 
-export const compose = (...parsers: styleFn[]): styleFn => {
+export const compose = (...parsers: StyleFn[]): StyleFn => {
     let config: ParserConfig = {}
     parsers.forEach(parser => {
         if (!parser || !parser.config) return

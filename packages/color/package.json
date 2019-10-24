@@ -1,5 +1,5 @@
 {
-  "name": "@typed-styled-system/core",
+  "name": "@typed-styled-system/color",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "haohello <trudgeli@gmail.com>",
@@ -27,9 +27,7 @@
     "url": "https://github.com/haohello/typed-styled-system/issues"
   },
   "dependencies": {
-    "csstype": "^2.6.7",
-    "object-assign": "^4.1.1",
-    "utility-types": "^3.8.0"
+    "@typed-styled-system/core": "^0.0.0"
   },
   "devDependencies": {
     

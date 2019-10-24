@@ -1,5 +1,19 @@
 import * as CSS from 'csstype';
 
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> =
+    Pick<T, Exclude<keyof T, Keys>> 
+    & {
+        [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
+    }[Keys]
+
+export type RequireOnlyOne<T, Keys extends keyof T = keyof T> =
+    Pick<T, Exclude<keyof T, Keys>>
+    & {
+    [K in Keys]-?:
+        Required<Pick<T, K>>
+        & Partial<Record<Exclude<Keys, K>, undefined>>
+    }[Keys]
+
 export type ObjectOrArray<T> = T[] | { [K: string]: T | ObjectOrArray<T> };
 
 export type Scale = ObjectOrArray<number | string>;
@@ -28,7 +42,7 @@ export interface LowLevelStyleFunctionArguments<N, S> {
 export type CmpStyleProp = Omit<ParserProps, 'theme'>
 export type CmpStylePropKeys = keyof CmpStyleProp
 
-export interface styleFnBase {
+export interface StyleFnBase {
     // (...args: any[]): any;
     (props: ParserProps): CSS.Properties;
     config?: ParserConfig;
@@ -36,13 +50,13 @@ export interface styleFnBase {
     cache?: object;
 }
 
-export type styleFnEx = {
-    [K in CmpStylePropKeys]? : styleFnBase
+export type StyleFnEx = {
+    [K in CmpStylePropKeys]? : StyleFnBase
 }
 
-export interface styleFn extends styleFnBase, styleFnEx {}
+export interface StyleFn extends StyleFnBase, StyleFnEx {}
 
-export interface sxFn {
+export interface SxFn {
   (value: TLengthStyledSystem, scale: ResponsiveValue<TLengthStyledSystem>, _props: ParserProps): CSS.Properties;
   scale?: string;
   defaults?: Scale;
@@ -64,9 +78,13 @@ export interface ConfigStyle {
     transform?: (value: any, scale?: ResponsiveValue<TLengthStyledSystem>, _props?: ParserProps) => any;
 }
 
-export interface Config {
-    /** Property name exposed for use in components */
-    [customStyleName: string]: ConfigStyle | boolean;
+// export interface Config {
+//     /** Property name exposed for use in components */
+//     [customStyleName: string]: ConfigStyle | boolean;
+// }
+
+export type Config = {
+    [K in CmpStylePropKeys]? : ConfigStyle | boolean
 }
 
 export interface VariantArgs {
@@ -816,25 +834,25 @@ export interface BorderStyleProps {
      *
      * [MDN * reference](https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-style)
      */
-    borderTopStyle?: ResponsiveValue<CSS.BorderTopStyleProperty>;
+    borderTopStyle?: ResponsiveValue<CSS.BorderTopStyleProperty | string>;
     /**
      * The border-bottom-style CSS property sets the line style of an element's bottom border.
      *
      * [MDN * reference](https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-style)
      */
-    borderBottomStyle?: ResponsiveValue<CSS.BorderBottomStyleProperty>;
+    borderBottomStyle?: ResponsiveValue<CSS.BorderBottomStyleProperty | string>;
     /**
      * The border-left-style CSS property sets the line style of an element's left border.
      *
      * [MDN * reference](https://developer.mozilla.org/en-US/docs/Web/CSS/border-left-style)
      */
-    borderLeftStyle?: ResponsiveValue<CSS.BorderLeftStyleProperty>;
+    borderLeftStyle?: ResponsiveValue<CSS.BorderLeftStyleProperty | string>;
     /**
      * The border-right-style CSS property sets the line style of an element's right border.
      *
      * [MDN * reference](https://developer.mozilla.org/en-US/docs/Web/CSS/border-right-style)
      */
-    borderRightStyle?: ResponsiveValue<CSS.BorderRightStyleProperty>;
+    borderRightStyle?: ResponsiveValue<CSS.BorderRightStyleProperty | string>;
 }
 
 
@@ -1049,54 +1067,54 @@ export interface OverflowProps {
  * Background
  */
 
-export interface BackgroundImageProps {
+export type BackgroundImageProps = {
     /**
      * The background-image CSS property sets one or more background images on an element.
      *
      * [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/background-image)
      */
-    backgroundImage?: ResponsiveValue<CSS.BackgroundImageProperty>;
+    [K in 'backgroundImage' | 'bgImage']?: ResponsiveValue<CSS.BackgroundImageProperty>;
 }
 
 
-export interface BackgroundSizeProps<TLength = TLengthStyledSystem> {
+export type BackgroundSizeProps<TLength = TLengthStyledSystem> = {
     /**
      * The background-size CSS property sets the size of the element's background image. The
      * image can be left to its natural size, stretched, or constrained to fit the available space.
      *
      * [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/background-size)
      */
-    backgroundSize?: ResponsiveValue<CSS.BackgroundSizeProperty<TLength>>;
+    [K in 'backgroundSize' | 'bgSize']?: ResponsiveValue<CSS.BackgroundSizeProperty<TLength>>;
 }
 
 
-export interface BackgroundPositionProps<TLength = TLengthStyledSystem> {
+export type BackgroundPositionProps<TLength = TLengthStyledSystem> = {
     /**
      * The background-position CSS property sets the initial position for each background image. The
      * position is relative to the position layer set by background-origin.
      *
      * [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position)
      */
-    backgroundPosition?: ResponsiveValue<CSS.BackgroundPositionProperty<TLength>>;
+    [K in 'backgroundPosition' | 'bgPosition']?: ResponsiveValue<CSS.BackgroundPositionProperty<TLength>>;
 }
 
 
-export interface BackgroundRepeatProps {
+export type BackgroundRepeatProps = {
     /**
      * The background-repeat CSS property sets how background images are repeated. A background
      * image can be repeated along the horizontal and vertical axes, or not repeated at all.
      *
      * [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat)
      */
-    backgroundRepeat?: ResponsiveValue<CSS.BackgroundRepeatProperty>;
+    [K in 'backgroundRepeat' | 'bgRepeat']?: ResponsiveValue<CSS.BackgroundRepeatProperty>;
 }
 
 
-export interface BackgroundProps<TLength = TLengthStyledSystem>
-    extends BackgroundImageProps,
-        BackgroundSizeProps,
-        BackgroundPositionProps,
-        BackgroundRepeatProps {
+export type BackgroundProps<TLength = TLengthStyledSystem> = 
+    BackgroundImageProps &
+        BackgroundSizeProps &
+        BackgroundPositionProps &
+        BackgroundRepeatProps  & {
     /**
      * The background shorthand CSS property sets all background style properties at once,
      * such as color, image, origin and size, repeat method, and others.
@@ -1191,84 +1209,84 @@ export interface ColorStyleProps {
 }
 
 export interface StylesProps {
-    space: styleFn;
-    margin: styleFn;
-    marginTop: styleFn;
-    marginBottom: styleFn;
-    marginLeft: styleFn;
-    marginRight: styleFn;
-    padding: styleFn;
-    paddingTop: styleFn;
-    paddingBottom: styleFn;
-    paddingLeft: styleFn;
-    paddingRight: styleFn;
-    width: styleFn;
-    fontSize: styleFn;
-    textColor: styleFn;
-    backgroundColor: styleFn;
-    color: styleFn;
-    fontFamily: styleFn;
-    textAlign: styleFn;
-    lineHeight: styleFn;
-    fontWeight: styleFn;
-    fontStyle: styleFn;
-    letterSpacing: styleFn;
-    display: styleFn;
-    maxWidth: styleFn;
-    minWidth: styleFn;
-    height: styleFn;
-    maxHeight: styleFn;
-    minHeight: styleFn;
-    size: styleFn;
-    verticalAlign: styleFn;
-    alignItems: styleFn;
-    alignContent: styleFn;
-    justifyItems: styleFn;
-    justifyContent: styleFn;
-    flexWrap: styleFn;
-    flexBasis: styleFn;
-    flexDirection: styleFn;
-    flex: styleFn;
-    justifySelf: styleFn;
-    alignSelf: styleFn;
-    order: styleFn;
-    gridGap: styleFn;
-    gridColumnGap: styleFn;
-    gridRowGap: styleFn;
-    gridColumn: styleFn;
-    gridRow: styleFn;
-    gridAutoFlow: styleFn;
-    gridAutoColumns: styleFn;
-    gridAutoRows: styleFn;
-    gridTemplateColumns: styleFn;
-    gridTemplateRows: styleFn;
-    gridTemplateAreas: styleFn;
-    gridArea: styleFn;
-    border: styleFn;
-    borderTop: styleFn;
-    borderRight: styleFn;
-    borderBottom: styleFn;
-    borderLeft: styleFn;
-    borders: styleFn;
-    borderColor: styleFn;
-    borderRadius: styleFn;
-    boxShadow: styleFn;
-    opacity: styleFn;
-    overflow: styleFn;
-    background: styleFn;
-    backgroundImage: styleFn;
-    backgroundPosition: styleFn;
-    backgroundRepeat: styleFn;
-    backgroundSize: styleFn;
-    position: styleFn;
-    zIndex: styleFn;
-    top: styleFn;
-    right: styleFn;
-    bottom: styleFn;
-    left: styleFn;
-    textStyle: styleFn;
-    colorStyle: styleFn;
-    buttonStyle: styleFn;
+    space: StyleFn;
+    margin: StyleFn;
+    marginTop: StyleFn;
+    marginBottom: StyleFn;
+    marginLeft: StyleFn;
+    marginRight: StyleFn;
+    padding: StyleFn;
+    paddingTop: StyleFn;
+    paddingBottom: StyleFn;
+    paddingLeft: StyleFn;
+    paddingRight: StyleFn;
+    width: StyleFn;
+    fontSize: StyleFn;
+    textColor: StyleFn;
+    backgroundColor: StyleFn;
+    color: StyleFn;
+    fontFamily: StyleFn;
+    textAlign: StyleFn;
+    lineHeight: StyleFn;
+    fontWeight: StyleFn;
+    fontStyle: StyleFn;
+    letterSpacing: StyleFn;
+    display: StyleFn;
+    maxWidth: StyleFn;
+    minWidth: StyleFn;
+    height: StyleFn;
+    maxHeight: StyleFn;
+    minHeight: StyleFn;
+    size: StyleFn;
+    verticalAlign: StyleFn;
+    alignItems: StyleFn;
+    alignContent: StyleFn;
+    justifyItems: StyleFn;
+    justifyContent: StyleFn;
+    flexWrap: StyleFn;
+    flexBasis: StyleFn;
+    flexDirection: StyleFn;
+    flex: StyleFn;
+    justifySelf: StyleFn;
+    alignSelf: StyleFn;
+    order: StyleFn;
+    gridGap: StyleFn;
+    gridColumnGap: StyleFn;
+    gridRowGap: StyleFn;
+    gridColumn: StyleFn;
+    gridRow: StyleFn;
+    gridAutoFlow: StyleFn;
+    gridAutoColumns: StyleFn;
+    gridAutoRows: StyleFn;
+    gridTemplateColumns: StyleFn;
+    gridTemplateRows: StyleFn;
+    gridTemplateAreas: StyleFn;
+    gridArea: StyleFn;
+    border: StyleFn;
+    borderTop: StyleFn;
+    borderRight: StyleFn;
+    borderBottom: StyleFn;
+    borderLeft: StyleFn;
+    borders: StyleFn;
+    borderColor: StyleFn;
+    borderRadius: StyleFn;
+    boxShadow: StyleFn;
+    opacity: StyleFn;
+    overflow: StyleFn;
+    background: StyleFn;
+    backgroundImage: StyleFn;
+    backgroundPosition: StyleFn;
+    backgroundRepeat: StyleFn;
+    backgroundSize: StyleFn;
+    position: StyleFn;
+    zIndex: StyleFn;
+    top: StyleFn;
+    right: StyleFn;
+    bottom: StyleFn;
+    left: StyleFn;
+    textStyle: StyleFn;
+    colorStyle: StyleFn;
+    buttonStyle: StyleFn;
 }
 
 export type ObjectOf<T> = { [key: string]: T }
@@ -1292,4 +1310,4 @@ export type ParserProps = {
 } */
 
 // export type SxType = ReturnType<typeof createStyleFunction>
-export type ParserConfig = {[K: string]: sxFn}
+export type ParserConfig = {[K: string]: SxFn}
